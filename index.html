@@ -1,0 +1,68 @@
+
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Aplikasi Anam</title>
+<style>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #101827;
+  color: white;
+}
+header {
+  background: #202e43;
+  padding: 20px;
+  font-size: 22px;
+  font-weight: bold;
+}
+main { padding: 20px; }
+.kartu {
+  background: #202e43;
+  padding: 20px;
+  border-radius: 15px;
+  margin-top: 15px;
+}
+button {
+  background: #38bdf8;
+  border: 0;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 16px;
+}
+nav {
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+  background: #202e43;
+  padding: 15px 0;
+}
+nav button { margin: 0 3px; }
+</style>
+</head>
+<body>
+<header>Aplikasi Anam</header>
+<main>
+  <h2 id="judul">Beranda</h2>
+  <div class="kartu">
+    <h3>Selamat datang!</h3>
+    <p>Ini adalah aplikasi website buatan saya sendiri.</p>
+    <button onclick="alert('Halo Anam!')">Tekan di sini</button>
+  </div>
+</main>
+<nav>
+  <button onclick="ubah('Beranda')">Beranda</button>
+  <button onclick="ubah('Tentang')">Tentang</button>
+  <button onclick="ubah('Profil')">Profil</button>
+</nav>
+<script>
+function ubah(nama) {
+  document.getElementById('judul').innerText = nama;
+}
+</script>
+</body>
+</html>
