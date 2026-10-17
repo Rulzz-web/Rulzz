@@ -3,66 +3,280 @@
 <html lang="id">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Aplikasi Anam</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
+<title>Balapan Mobil Rulzz</title>
 <style>
-body {
-  margin: 0;
-  font-family: Arial, sans-serif;
-  background: #101827;
-  color: white;
+*{box-sizing:border-box}
+body{
+  margin:0;background:#101827;color:white;
+  font-family:Arial,sans-serif;text-align:center;
+  touch-action:manipulation
 }
-header {
-  background: #202e43;
-  padding: 20px;
-  font-size: 22px;
-  font-weight: bold;
+header{padding:15px;background:#202e43}
+h1{font-size:24px;margin:4px}
+header p{margin:6px 0;color:#cbd5e1}
+.info{
+  display:flex;justify-content:space-around;
+  padding:12px;font-size:17px;font-weight:bold
 }
-main { padding: 20px; }
-.kartu {
-  background: #202e43;
-  padding: 20px;
-  border-radius: 15px;
-  margin-top: 15px;
+#area{
+  position:relative;width:min(94vw,360px);
+  height:min(65vh,530px);min-height:350px;
+  margin:auto;background:#333;
+  border:4px solid #64748b;overflow:hidden;
+  border-radius:12px
 }
-button {
-  background: #38bdf8;
-  border: 0;
-  border-radius: 10px;
-  padding: 12px;
-  font-size: 16px;
+#jalan{
+  position:absolute;inset:0;
+  background:#303943
 }
-nav {
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  display: flex;
-  justify-content: space-around;
-  background: #202e43;
-  padding: 15px 0;
+.garis{
+  position:absolute;width:6px;height:55px;
+  background:white;left:calc(50% - 3px);
+  opacity:.8
 }
-nav button { margin: 0 3px; }
+.pinggir{
+  position:absolute;top:0;bottom:0;width:8px;
+  background:#facc15
+}
+.pinggir.kiri{left:12px}
+.pinggir.kanan{right:12px}
+.mobil{
+  position:absolute;width:44px;height:70px;
+  border-radius:10px 10px 6px 6px;
+  border:3px solid #e2e8f0;
+  box-shadow:inset 0 -12px #111827;
+}
+.mobil:before{
+  content:"";position:absolute;left:7px;right:7px;
+  top:10px;height:19px;background:#bae6fd;
+  border-radius:5px
+}
+.mobil:after{
+  content:"";position:absolute;left:-5px;right:-5px;
+  bottom:8px;height:12px;
+  border-left:5px solid #111;
+  border-right:5px solid #111
+}
+#pemain{background:#ef4444;bottom:20px;left:calc(50% - 22px)}
+.lawan{background:#2563eb;top:-80px}
+.lawan:before{background:#bfdbfe}
+#pesan{
+  position:absolute;inset:0;background:#0f172acc;
+  display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+  padding:20px;z-index:5
+}
+#pesan h2{font-size:27px;margin:8px}
+#pesan p{line-height:1.5}
+button{
+  border:0;border-radius:12px;padding:14px 20px;
+  font-size:17px;font-weight:bold;cursor:pointer
+}
+#mulai{background:#22c55e;color:#052e16}
+.kontrol{
+  display:flex;justify-content:center;gap:35px;
+  margin:14px auto
+}
+.kontrol button{
+  width:110px;background:#38bdf8;color:#082f49;
+  font-size:25px;touch-action:none
+}
+.petunjuk{font-size:13px;color:#cbd5e1;padding:0 12px 15px}
 </style>
 </head>
 <body>
-<header>Aplikasi Anam</header>
-<main>
-  <h2 id="judul">Beranda</h2>
-  <div class="kartu">
-    <h3>Selamat datang!</h3>
-    <p>Ini adalah aplikasi website buatan saya sendiri.</p>
-    <button onclick="alert('Halo Anam!')">Tekan di sini</button>
+<header>
+  <h1>🏁 RULZZ RACING</h1>
+  <p>Balapan seru, hindari semua lawan!</p>
+</header>
+
+<div class="info">
+  <div>Skor: <span id="skor">0</span></div>
+  <div>Rekor: <span id="rekor">0</span></div>
+</div>
+
+<div id="area">
+  <div id="jalan"></div>
+  <div class="pinggir kiri"></div>
+  <div class="pinggir kanan"></div>
+  <div id="pemain" class="mobil"></div>
+  <div id="lawan1" class="mobil lawan"></div>
+  <div id="lawan2" class="mobil lawan"></div>
+
+  <div id="pesan">
+    <h2 id="judul">🚗 RULZZ RACING</h2>
+    <p id="keterangan">Geser mobil ke kiri dan kanan.<br>Hindari mobil lawan dan kumpulkan skor!</p>
+    <button id="mulai">MULAI BALAPAN</button>
   </div>
-</main>
-<nav>
-  <button onclick="ubah('Beranda')">Beranda</button>
-  <button onclick="ubah('Tentang')">Tentang</button>
-  <button onclick="ubah('Profil')">Profil</button>
-</nav>
+</div>
+
+<div class="kontrol">
+  <button id="kiri" aria-label="Belok kiri">⬅️</button>
+  <button id="kanan" aria-label="Belok kanan">➡️</button>
+</div>
+<p class="petunjuk">Gunakan tombol kiri dan kanan untuk menghindar.</p>
+
 <script>
-function ubah(nama) {
-  document.getElementById('judul').innerText = nama;
+const area=document.getElementById("area");
+const pemain=document.getElementById("pemain");
+const lawan=[
+  document.getElementById("lawan1"),
+  document.getElementById("lawan2")
+];
+const pesan=document.getElementById("pesan");
+const skorTeks=document.getElementById("skor");
+const rekorTeks=document.getElementById("rekor");
+const tombolMulai=document.getElementById("mulai");
+
+let jalanAktif=false;
+let posisi=0;
+let skor=0;
+let kecepatan=3;
+let waktuSebelumnya=0;
+let bingkai=0;
+let garis=[];
+let mobilLawan=[];
+
+let rekor=0;
+try{
+  rekor=Number(localStorage.getItem("rulzzRekor"))||0;
+}catch(e){}
+rekorTeks.textContent=rekor;
+
+function siapkan(){
+  garis=[];
+  document.querySelectorAll(".garis").forEach(e=>e.remove());
+  for(let i=0;i<6;i++){
+    const g=document.createElement("div");
+    g.className="garis";
+    g.style.top=(i*100-50)+"px";
+    area.appendChild(g);
+    garis.push({elemen:g,y:i*100-50});
+  }
 }
+
+function posisiMobil(){
+  const lebar=area.clientWidth;
+  pemain.style.left=(lebar/2-22+posisi*65)+"px";
+}
+
+function aturLawan(){
+  mobilLawan.forEach((m,i)=>{
+    m.x=Math.random()*(area.clientWidth-64)+32;
+    m.y=-100-i*220;
+    m.elemen.style.left=m.x+"px";
+    m.elemen.style.top=m.y+"px";
+  });
+}
+
+function mulai(){
+  jalanAktif=true;
+  skor=0;
+  kecepatan=3;
+  posisi=0;
+  bingkai=0;
+  waktuSebelumnya=0;
+  skorTeks.textContent="0";
+  pesan.style.display="none";
+  mobilLawan=lawan.map(e=>({elemen:e,x:0,y:0}));
+  siapkan();
+  posisiMobil();
+  aturLawan();
+  requestAnimationFrame(putar);
+}
+
+function tabrakan(a,b){
+  const A=a.getBoundingClientRect();
+  const B=b.getBoundingClientRect();
+  return A.left+7<B.right-7 &&
+         A.right-7>B.left+7 &&
+         A.top+8<B.bottom-8 &&
+         A.bottom-8>B.top+8;
+}
+
+function selesai(){
+  jalanAktif=false;
+  if(skor>rekor){
+    rekor=skor;
+    rekorTeks.textContent=rekor;
+    try{localStorage.setItem("rulzzRekor",rekor)}catch(e){}
+  }
+  document.getElementById("judul").textContent="💥 GAME OVER!";
+  document.getElementById("keterangan").innerHTML=
+    "Skor kamu: <b>"+skor+"</b><br>Rekor terbaik: <b>"+rekor+"</b><br>Ayo coba lagi!";
+  tombolMulai.textContent="MAIN LAGI";
+  pesan.style.display="flex";
+}
+
+function putar(waktu){
+  if(!jalanAktif)return;
+  if(!waktuSebelumnya)waktuSebelumnya=waktu;
+  const selang=Math.min((waktu-waktuSebelumnya)/16.67,2);
+  waktuSebelumnya=waktu;
+  bingkai+=selang;
+
+  garis.forEach(g=>{
+    g.y+=kecepatan*selang*2;
+    if(g.y>area.clientHeight)g.y=-60;
+    g.elemen.style.top=g.y+"px";
+  });
+
+  mobilLawan.forEach(m=>{
+    m.y+=kecepatan*selang*2;
+    if(m.y>area.clientHeight){
+      m.y=-100;
+      m.x=Math.random()*(area.clientWidth-64)+32;
+      m.elemen.style.left=m.x+"px";
+      skor++;
+      skorTeks.textContent=skor;
+      kecepatan=Math.min(3+skor/20,8);
+    }
+    m.elemen.style.top=m.y+"px";
+    if(tabrakan(pemain,m.elemen)){
+      selesai();
+    }
+  });
+
+  if(skor>=10){
+    document.querySelector("header p").textContent="🔥 Hebat! Terus bertahan!";
+  }
+  if(jalanAktif)requestAnimationFrame(putar);
+}
+
+function gerak(arah){
+  if(!jalanAktif)return;
+  posisi=Math.max(-1.65,Math.min(1.65,posisi+arah));
+  posisiMobil();
+}
+
+document.getElementById("kiri").addEventListener("pointerdown",e=>{
+  e.preventDefault();gerak(-0.65);
+});
+document.getElementById("kanan").addEventListener("pointerdown",e=>{
+  e.preventDefault();gerak(0.65);
+});
+
+let sentuhX=null;
+area.addEventListener("touchstart",e=>{
+  sentuhX=e.touches[0].clientX;
+},{passive:true});
+area.addEventListener("touchend",e=>{
+  if(sentuhX===null)return;
+  const beda=e.changedTouches[0].clientX-sentuhX;
+  if(Math.abs(beda)>20)gerak(beda>0?0.65:-0.65);
+  sentuhX=null;
+},{passive:true});
+
+document.addEventListener("keydown",e=>{
+  if(e.key==="ArrowLeft")gerak(-0.65);
+  if(e.key==="ArrowRight")gerak(0.65);
+});
+tombolMulai.addEventListener("click",mulai);
+
+siapkan();
+posisiMobil();
 </script>
 </body>
-</html>
+  </html>
+  
