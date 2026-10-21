@@ -1,426 +1,489 @@
-
 <!DOCTYPE html>
 <html lang="id">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Rulzz App</title>
+<meta name="theme-color" content="#080d1b">
+<title>RULZZ — Game & Community</title>
 <style>
 *{box-sizing:border-box}
-body{margin:0;background:#0f172a;color:white;font-family:Arial,sans-serif}
-header{padding:22px;background:#172554;border-radius:0 0 22px 22px}
-header h1{margin:0;font-size:27px}
-header p{color:#bfdbfe}
-main{padding:18px 18px 90px}
-.kartu{background:#1e293b;border-radius:16px;padding:17px;margin:12px 0}
-.grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.menu{background:#1e293b;border:1px solid #334155;border-radius:16px;padding:20px 10px;color:white;font-size:16px}
-.ikon{font-size:28px;display:block;margin-bottom:10px}
-.tombol{border:0;border-radius:10px;background:#38bdf8;color:#082f49;padding:12px;font-weight:bold}
-input,textarea{width:100%;padding:12px;border-radius:10px;border:1px solid #475569;background:#0f172a;color:white;margin:8px 0;font:inherit}
-textarea{resize:vertical}
-nav{position:fixed;bottom:0;left:0;width:100%;display:flex;background:#172554;padding:9px 3px;justify-content:space-around;z-index:10}
-nav button{border:0;background:none;color:#cbd5e1;font-size:12px;padding:7px 5px}
-nav span{display:block;font-size:20px;margin-bottom:4px}
-nav button.aktif{color:#38bdf8}
-.halaman{display:none}
-.halaman.aktif{display:block}
-.kecil,.status{font-size:13px;color:#cbd5e1;overflow-wrap:anywhere}
-.sembunyi{display:none!important}
-#daftarPesan{height:300px;overflow-y:auto;background:#0f172a;border-radius:10px;padding:10px;margin:12px 0}
-.bubble{background:#334155;border-radius:12px;padding:10px;margin:9px 0;overflow-wrap:anywhere}
-.bubble small{display:block;color:#7dd3fc;margin-bottom:6px;font-size:12px}
-.bubble .waktu{color:#94a3b8;font-size:10px;margin-top:6px}
-#statusChat{overflow-wrap:anywhere}
-.tombol:disabled{opacity:.5}
+:root{--bg:#080d1b;--card:#111b30;--card2:#172640;--line:#263752;--blue:#3985ff;--text:#edf3ff;--muted:#91a3c1;--green:#29d391;--red:#ff5d73}
+body{margin:0;background:var(--bg);color:var(--text);font-family:Arial,sans-serif;font-size:14px}
+button,input,textarea,select{font:inherit}
+button{cursor:pointer;border:1px solid var(--line);background:#1b2b47;color:white;border-radius:10px;padding:10px}
+button:hover{filter:brightness(1.2)}
+input,textarea,select{width:100%;background:#0b1426;color:white;border:1px solid var(--line);padding:11px;border-radius:10px;margin:5px 0}
+h1,h2,h3,p{margin-top:0}
+.small{font-size:12px;color:var(--muted)}
+.app{display:flex;min-height:100vh}
+.sidebar{width:220px;background:#0c1425;border-right:1px solid var(--line);padding:18px;flex-shrink:0}
+.logo{font-size:25px;font-weight:900;color:#66a5ff;letter-spacing:2px;margin-bottom:5px}
+.tagline{color:var(--muted);font-size:11px;margin-bottom:25px}
+.nav{display:flex;flex-direction:column;gap:7px}
+.nav button{text-align:left;background:transparent;border-color:transparent;color:#aebed8}
+.nav button.active,.nav button:hover{background:#1a2e4e;border-color:#2e5283;color:white}
+.main{flex:1;min-width:0;padding:20px;max-width:1600px;margin:auto;width:100%}
+.top{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:20px}
+.top h2{margin:0;font-size:20px}
+.avatar{background:#244d83;border-radius:50%;padding:12px;font-weight:bold}
+.page{display:none}.page.active{display:block}
+.grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px}
+.two{display:grid;grid-template-columns:1.3fr 1fr;gap:14px}
+.card{background:var(--card);border:1px solid var(--line);border-radius:16px;padding:16px;min-width:0}
+.card h3{font-size:15px;margin-bottom:12px}
+.banner{background:linear-gradient(120deg,#183c70,#19213d 65%,#39245b);padding:24px;border-radius:18px;margin-bottom:16px;border:1px solid #34527d}
+.banner h1{font-size:26px;margin-bottom:8px}
+.row{display:flex;gap:9px;align-items:center}
+.row>*{min-width:0}
+.wrap{flex-wrap:wrap}
+.primary{background:var(--blue);border-color:var(--blue)}
+.good{color:var(--green)}.bad{color:var(--red)}
+.muted{color:var(--muted)}
+.stat{font-size:25px;font-weight:bold;margin:8px 0}
+.faction{border-left:4px solid var(--blue)}
+.faction:nth-child(2){border-left-color:#e85e79}
+.faction:nth-child(3){border-left-color:#a47cff}
+.faction:nth-child(4){border-left-color:#e9b84f}
+.faction:nth-child(5){border-left-color:#29d391}
+.list{display:flex;flex-direction:column;gap:9px}
+.item{padding:10px;background:var(--card2);border-radius:10px}
+.pill{display:inline-block;background:#203c61;color:#9fc6ff;border-radius:20px;padding:5px 9px;font-size:11px}
+.gameboard{display:grid;gap:7px;margin:12px 0}
+.gameboard button{min-height:60px;font-size:24px}
+.chatbox{height:280px;overflow-y:auto;background:#0a1323;padding:10px;border-radius:10px;margin-bottom:10px}
+.message{background:#1b2b47;padding:9px;border-radius:10px;margin:7px 0;overflow-wrap:anywhere}
+.message b{color:#8ebaff}
+.map{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
+.tile{aspect-ratio:1;border-radius:5px;background:#183e38;border:1px solid #2d6558;font-size:10px;padding:2px}
+.tile:nth-child(3n){background:#28375d}
+.tile:nth-child(5n){background:#57412d}
+.footer{text-align:center;color:var(--muted);font-size:11px;padding:25px 0}
+hr{border:0;border-top:1px solid var(--line);margin:15px 0}
+@media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar{width:180px;padding:12px}.main{padding:13px}}
+@media(max-width:600px){
+ .app{display:block;padding-bottom:68px}.sidebar{width:100%;border-right:0;border-bottom:1px solid var(--line);padding:12px}
+ .logo{font-size:21px}.tagline{margin-bottom:10px}
+ .nav{flex-direction:row;overflow-x:auto;padding-bottom:4px}
+ .nav button{white-space:nowrap;padding:9px;font-size:12px}
+ .main{padding:12px}.grid{grid-template-columns:1fr 1fr;gap:9px}.two{grid-template-columns:1fr}
+ .card{padding:12px}.banner{padding:17px}.banner h1{font-size:22px}
+ .top h2{font-size:17px}.stat{font-size:21px}
+}
 </style>
 </head>
 <body>
-<header>
-<h1>🚀 RULZZ</h1>
-<p>Satu aplikasi, banyak fitur!</p>
+<div class="app">
+<aside class="sidebar">
+  <div class="logo">🚀 RULZZ</div>
+  <div class="tagline">SATU APLIKASI, BANYAK FITUR!</div>
+  <div class="nav">
+    <button class="active" data-page="home">🏠 Beranda</button>
+    <button data-page="games">🎮 Game</button>
+    <button data-page="chat">💬 Chat</button>
+    <button data-page="private">🔒 Chat Pribadi</button>
+    <button data-page="factions">🛡️ Kubu</button>
+    <button data-page="map">🗺️ Peta Wilayah</button>
+    <button data-page="rank">🏆 Peringkat</button>
+    <button data-page="profile">👤 Profil</button>
+    <button data-page="tools">🧰 Alat</button>
+  </div>
+</aside>
+
+<main class="main">
+<header class="top">
+  <div>
+    <h2 id="pageTitle">Beranda</h2>
+    <div class="small" id="userStatus">Selamat datang di RULZZ</div>
+  </div>
+  <div class="row">
+    <button onclick="showPage('profile')">🔔</button>
+    <div class="avatar" id="avatar">R</div>
+  </div>
 </header>
 
-<main>
-<section id="beranda" class="halaman aktif">
-<h2 id="sapaan">Halo, Rulzz! 👋</h2>
-<p class="kecil">Mau melakukan apa hari ini?</p>
-<div class="grid">
-<button class="menu" onclick="buka('game')"><span class="ikon">🎮</span>Game</button>
-<button class="menu" onclick="buka('chat')"><span class="ikon">💬</span>Chat</button>
-<button class="menu" onclick="buka('profil')"><span class="ikon">👤</span>Profil</button>
-<button class="menu" onclick="buka('alat')"><span class="ikon">🧰</span>Alat</button>
-</div>
-<div class="kartu">
-<h3>Selamat datang di Rulzz</h3>
-<p>Website buatan sendiri yang terus dikembangkan.</p>
-<p id="statusBeranda" class="kecil">Jelajahi Rulzz!</p>
-</div>
+<section class="page active" id="home">
+  <div class="banner">
+    <span class="pill">KOMUNITAS RULZZ</span>
+    <h1>Bangun kubumu. Kuasai wilayahmu.</h1>
+    <p class="muted">Main game, bertemu teman, dan kumpulkan poin!</p>
+    <button class="primary" onclick="showPage('games')">🎮 Mulai bermain</button>
+  </div>
+  <div class="grid">
+    <div class="card"><div class="muted">Level akun</div><div class="stat">LV. <span id="level">1</span></div></div>
+    <div class="card"><div class="muted">Poin kamu</div><div class="stat" id="points">0</div></div>
+    <div class="card"><div class="muted">Kubu</div><div class="stat" id="myFaction">Belum ada</div></div>
+  </div>
+  <br>
+  <h3>🛡️ Pilih kubu</h3>
+  <div class="grid">
+    <div class="card faction"><h3>🔵 TRG</h3><p class="small">Thunder Guard</p><button onclick="joinFaction('TRG')">Gabung</button></div>
+    <div class="card faction"><h3>🔴 BLZ</h3><p class="small">Blaze Legion</p><button onclick="joinFaction('BLZ')">Gabung</button></div>
+    <div class="card faction"><h3>🟣 VTR</h3><p class="small">Vortex</p><button onclick="joinFaction('VTR')">Gabung</button></div>
+    <div class="card faction"><h3>🟡 DGN</h3><p class="small">Dragon</p><button onclick="joinFaction('DGN')">Gabung</button></div>
+    <div class="card faction"><h3>🟢 SHD</h3><p class="small">Shadow</p><button onclick="joinFaction('SHD')">Gabung</button></div>
+  </div>
+  <br>
+  <div class="two">
+    <div class="card"><h3>🗺️ Peta wilayah</h3><div class="map" id="homeMap"></div><button onclick="showPage('map')">Lihat peta</button></div>
+    <div class="card"><h3>🏆 Peringkat contoh</h3><div id="homeRank" class="list"></div><button onclick="showPage('rank')">Lihat semua</button></div>
+  </div>
+  <br>
+  <div class="grid">
+    <div class="card"><h3>📜 Misi harian</h3><p class="small">Mainkan satu permainan.</p><button onclick="showPage('games')">Kerjakan</button></div>
+    <div class="card"><h3>🤝 Rekrut teman</h3><p class="small">Ajak teman bergabung.</p><button onclick="shareSite()">Bagikan situs</button></div>
+    <div class="card"><h3>💬 Forum</h3><p class="small">Ngobrol dengan komunitas.</p><button onclick="showPage('chat')">Buka chat</button></div>
+  </div>
 </section>
 
-<section id="game" class="halaman">
-<h2>🎮 Game Center</h2>
-<div class="kartu">
-<h3>🏎️ Balapan Mobil</h3>
-<p>Game balapan lengkap akan ditambahkan nanti.</p>
-</div>
-<div class="kartu">
-<h3>🔢 Tebak Angka</h3>
-<p>Tebak angka dari 1 sampai 10.</p>
-<input id="tebakan" type="number" min="1" max="10" placeholder="Masukkan angka">
-<button class="tombol" onclick="mainTebak()">Tebak!</button>
-<p id="hasilTebak" class="status"></p>
-<button class="tombol" onclick="angkaRahasia=Math.floor(Math.random()*10)+1;document.getElementById('hasilTebak').textContent='Angka baru sudah dipilih!'">Mulai ulang</button>
-</div>
-<div class="kartu"><h3>🧠 Game lainnya</h3><p>Game baru bisa ditambahkan nanti.</p></div>
+<section class="page" id="factions">
+  <div class="banner"><h1>🛡️ Kubu RULZZ</h1><p>Pilih satu kubu untuk profilmu.</p></div>
+  <div class="grid">
+    <div class="card faction"><h3>🔵 TRG</h3><p>Thunder Guard</p><button onclick="joinFaction('TRG')">Gabung TRG</button></div>
+    <div class="card faction"><h3>🔴 BLZ</h3><p>Blaze Legion</p><button onclick="joinFaction('BLZ')">Gabung BLZ</button></div>
+    <div class="card faction"><h3>🟣 VTR</h3><p>Vortex</p><button onclick="joinFaction('VTR')">Gabung VTR</button></div>
+    <div class="card faction"><h3>🟡 DGN</h3><p>Dragon</p><button onclick="joinFaction('DGN')">Gabung DGN</button></div>
+    <div class="card faction"><h3>🟢 SHD</h3><p>Shadow</p><button onclick="joinFaction('SHD')">Gabung SHD</button></div>
+  </div>
 </section>
 
-<section id="chat" class="halaman">
-<h2>💬 Chat</h2>
-<div class="kartu">
-<h3>Ruang Chat Rulzz</h3>
-<p id="statusChat" class="kecil">Memeriksa koneksi...</p>
-<div id="daftarPesan">
-<p class="kecil">Pesan akan tampil di sini.</p>
-</div>
-<form id="formPesan" onsubmit="kirimPesan(event)">
-<textarea id="pesan" maxlength="1000" rows="2" placeholder="Tulis pesan..." required></textarea>
-<button id="tombolKirim" class="tombol" type="submit">Kirim pesan</button>
-</form>
-<p class="kecil">Login diperlukan untuk membaca dan mengirim pesan. Jangan kirim kata sandi atau informasi pribadi.</p>
-</div>
+<section class="page" id="map">
+  <div class="banner"><h1>🗺️ Peta Wilayah</h1><p>Peta permainan contoh. Belum menjadi peta perang online.</p></div>
+  <div class="card"><div class="map" id="bigMap"></div><hr><p>🟩 Hutan &nbsp; 🟦 Markas &nbsp; 🟫 Wilayah netral</p></div>
+  <br><div class="card"><h3>⚔️ Informasi wilayah</h3><p class="small">Wilayah dan hasil perang pada halaman ini masih simulasi.</p><button onclick="addPoints(5)">Latihan misi (+5 poin)</button></div>
 </section>
 
-<section id="profil" class="halaman">
-<h2>👤 Akun & Profil</h2>
-<div id="formAkun" class="kartu">
-<h3 id="judulAkun">Buat akun Rulzz</h3>
-<p class="kecil">Daftar akun baru atau masuk jika sudah punya akun.</p>
-<label for="namaDaftar">Nama pengguna</label>
-<input id="namaDaftar" maxlength="30" autocomplete="nickname" placeholder="Contoh: rulzz_gamer">
-<label for="emailAkun">Email</label>
-<input id="emailAkun" type="email" autocomplete="email" placeholder="nama@email.com">
-<label for="sandiAkun">Kata sandi</label>
-<input id="sandiAkun" type="password" minlength="6" autocomplete="new-password" placeholder="Minimal 6 karakter">
-<button id="tombolDaftar" class="tombol" style="width:100%;margin-top:8px" onclick="daftar()">Daftar akun</button>
-<button id="tombolMasuk" class="tombol sembunyi" style="width:100%;margin-top:8px" onclick="masuk()">Masuk akun</button>
-<button id="tombolMode" style="width:100%;margin-top:14px;padding:8px;background:none;border:0;color:#7dd3fc" onclick="ubahMode()">Sudah punya akun? Masuk</button>
-<p id="statusAkun" class="status" role="status"></p>
-</div>
-<div id="profilAkun" class="kartu sembunyi">
-<h3>Profil kamu</h3>
-<p>Nama pengguna: <strong id="namaProfil"></strong></p>
-<p>Email: <span id="emailProfil"></span></p>
-<p id="statusProfil" class="status"></p>
-<button class="tombol" onclick="editNama()">Ubah nama</button>
-<button class="tombol" style="margin-top:8px" onclick="keluar()">Keluar akun</button>
-</div>
+<section class="page" id="rank">
+  <div class="banner"><h1>🏆 Peringkat pemain</h1><p>Daftar contoh lokal pada perangkat ini.</p></div>
+  <div class="card"><div id="allRank" class="list"></div></div>
 </section>
 
-<section id="alat" class="halaman">
-<h2>🧰 Alat</h2>
-<div class="kartu">
-<h3>Kalkulator</h3>
-<input id="angka1" type="number" placeholder="Angka pertama">
-<input id="angka2" type="number" placeholder="Angka kedua">
-<div class="grid">
-<button class="tombol" onclick="hitung('+')">Tambah (+)</button>
-<button class="tombol" onclick="hitung('-')">Kurang (-)</button>
-<button class="tombol" onclick="hitung('*')">Kali (×)</button>
-<button class="tombol" onclick="hitung('/')">Bagi (÷)</button>
-</div>
-<h3 id="hasilHitung">Hasil: -</h3>
-</div>
+<section class="page" id="games">
+  <div class="banner"><h1>🎮 Arena Game</h1><p>Main dan kumpulkan poin.</p></div>
+  <div class="grid">
+    <div class="card"><h3>🔢 Tebak angka</h3><p class="small">Tebak angka 1–10.</p>
+      <input id="guessInput" type="number" min="1" max="10" placeholder="Angka 1 sampai 10">
+      <button class="primary" onclick="guessNumber()">Tebak</button><p id="guessResult" class="small"></p>
+    </div>
+    <div class="card"><h3>✊ Batu Gunting Kertas</h3>
+      <div class="row wrap"><button onclick="rps('Batu')">✊ Batu</button><button onclick="rps('Gunting')">✌️ Gunting</button><button onclick="rps('Kertas')">✋ Kertas</button></div>
+      <p id="rpsResult" class="small"></p>
+    </div>
+    <div class="card"><h3>⭕ Tic Tac Toe</h3><div class="gameboard" style="grid-template-columns:repeat(3,1fr)" id="tttBoard"></div><p id="tttResult" class="small">Giliran X</p><button onclick="resetTTT()">Ulangi</button></div>
+    <div class="card"><h3>🧠 Cocokkan kartu</h3><p class="small">Buka dua kartu yang sama.</p><div class="gameboard" style="grid-template-columns:repeat(4,1fr)" id="memoryBoard"></div><button onclick="resetMemory()">Mulai ulang</button><p id="memoryResult" class="small"></p></div>
+    <div class="card"><h3>♟️ Catur lokal</h3><p class="small">Papan contoh untuk dua pemain di satu perangkat. Belum online.</p><div id="chessBoard" class="gameboard" style="grid-template-columns:repeat(8,1fr)"></div><p id="chessResult" class="small">Papan catur demo.</p><button onclick="resetChess()">Atur ulang papan</button></div>
+    <div class="card"><h3>🏎️ Balap sederhana</h3><p class="small">Hindari rintangan dengan tombol kiri dan kanan.</p><div style="background:#0a1323;padding:12px;border-radius:10px;text-align:center"><div id="carTrack" style="font-size:28px;line-height:1.8">⬛⬛🚗⬛⬛<br>⬛⬛⬛⬛⬛<br>⬛⬛⬛⬛⬛</div><p id="carScore">Skor: 0</p><div class="row" style="justify-content:center"><button onclick="moveCar(-1)">⬅️</button><button onclick="startCar()">Mulai</button><button onclick="moveCar(1)">➡️</button></div></div></div>
+  </div>
 </section>
+
+<section class="page" id="chat">
+  <div class="banner"><h1>💬 Chat komunitas</h1><p>Pesan online memerlukan akun dan aturan Firestore yang benar.</p></div>
+  <div class="card">
+    <div id="chatStatus" class="small">Memeriksa koneksi...</div>
+    <div id="chatBox" class="chatbox"></div>
+    <textarea id="chatInput" rows="2" maxlength="1000" placeholder="Tulis pesan..."></textarea>
+    <button class="primary" onclick="sendChat()">Kirim pesan</button>
+  </div>
+</section>
+
+<section class="page" id="private">
+  <div class="banner"><h1>🔒 Chat pribadi</h1><p>Contoh tampilan. Pesan pribadi belum terhubung ke server.</p></div>
+  <div class="card">
+    <label>Nama pengguna tujuan</label><input id="privateName" placeholder="Masukkan username teman">
+    <label>Pesan</label><textarea id="privateText" rows="3" placeholder="Tulis pesan pribadi"></textarea>
+    <button onclick="sendPrivate()">Simpan contoh pesan</button>
+    <div id="privateBox" class="list" style="margin-top:12px"></div>
+  </div>
+</section>
+
+<section class="page" id="profile">
+  <div class="banner"><h1>👤 Profil RULZZ</h1><p>Buat akun atau masuk untuk menggunakan chat online.</p></div>
+  <div class="two">
+    <div class="card"><h3>Daftar akun</h3>
+      <input id="regName" placeholder="Nama pengguna">
+      <input id="regEmail" type="email" placeholder="Alamat email">
+      <input id="regPass" type="password" placeholder="Kata sandi (minimal 6 karakter)">
+      <button class="primary" onclick="registerUser()">Buat akun</button>
+    </div>
+    <div class="card"><h3>Masuk akun</h3>
+      <input id="loginEmail" type="email" placeholder="Alamat email">
+      <input id="loginPass" type="password" placeholder="Kata sandi">
+      <button class="primary" onclick="loginUser()">Masuk</button>
+      <hr><p id="profileStatus" class="small">Belum masuk.</p>
+      <button onclick="logoutUser()">Keluar akun</button>
+    </div>
+  </div>
+</section>
+
+<section class="page" id="tools">
+  <div class="banner"><h1>🧰 Alat</h1><p>Kalkulator sederhana.</p></div>
+  <div class="card" style="max-width:500px">
+    <input id="calcDisplay" placeholder="Contoh: 12+5*2">
+    <div class="grid">
+      <button onclick="calcAdd('7')">7</button><button onclick="calcAdd('8')">8</button><button onclick="calcAdd('9')">9</button>
+      <button onclick="calcAdd('/')">÷</button><button onclick="calcAdd('4')">4</button><button onclick="calcAdd('5')">5</button>
+      <button onclick="calcAdd('6')">6</button><button onclick="calcAdd('*')">×</button><button onclick="calcAdd('1')">1</button>
+      <button onclick="calcAdd('2')">2</button><button onclick="calcAdd('3')">3</button><button onclick="calcAdd('-')">−</button>
+      <button onclick="calcClear()">C</button><button onclick="calcAdd('0')">0</button><button onclick="calcAdd('.')">.</button><button onclick="calcAdd('+')">+</button>
+    </div>
+    <br><button class="primary" onclick="calculate()">= Hitung</button><p id="calcResult" class="stat"></p>
+  </div>
+</section>
+<div class="footer">RULZZ © 2026 · Dibuat untuk komunitas</div>
 </main>
+<script type="module">
+import {initializeApp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import {getAuth,onAuthStateChanged,createUserWithEmailAndPassword,signInWithEmailAndPassword,signOut,updateProfile} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-auth.js";
+import {getFirestore,collection,addDoc,query,orderBy,limit,onSnapshot,serverTimestamp} from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
 
-<nav>
-<button class="aktif" data-halaman="beranda" onclick="buka('beranda')"><span>🏠</span>Beranda</button>
-<button data-halaman="game" onclick="buka('game')"><span>🎮</span>Game</button>
-<button data-halaman="chat" onclick="buka('chat')"><span>💬</span>Chat</button>
-<button data-halaman="profil" onclick="buka('profil')"><span>👤</span>Profil</button>
-<button data-halaman="alat" onclick="buka('alat')"><span>🧰</span>Alat</button>
-</nav>
-
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-auth-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore-compat.js"></script>
-
-<script>
 const firebaseConfig={
-apiKey:"AIzaSyAixJiLe97g9lAC1gvC65lRKU3q3XKpTIg",
-authDomain:"rulzz-app.firebaseapp.com",
-projectId:"rulzz-app",
-storageBucket:"rulzz-app.firebasestorage.app",
-messagingSenderId:"420880900842",
-appId:"1:420880900842:web:580e47641d89efe215ed93",
-measurementId:"G-JZC391VHZ6"
+ apiKey:"AIzaSyAixJiLe97g9lAC1gvC65lRKU3q3XKpTIg",
+ authDomain:"rulzz-app.firebaseapp.com",
+ projectId:"rulzz-app",
+ storageBucket:"rulzz-app.firebasestorage.app",
+ messagingSenderId:"420880900842",
+ appId:"1:420880900842:web:580e47641d89efe215ed93",
+ measurementId:"G-JZC391VHZ6"
 };
 
-let auth=null;
-let db=null;
-let pengguna=null;
-let modeDaftar=true;
-let berhentiChat=null;
-let angkaRahasia=Math.floor(Math.random()*10)+1;
-
-function buka(id){
-document.querySelectorAll('.halaman').forEach(x=>x.classList.remove('aktif'));
-document.getElementById(id)?.classList.add('aktif');
-document.querySelectorAll('nav button').forEach(x=>x.classList.toggle('aktif',x.dataset.halaman===id));
-if(id==='chat')tampilkanChat();
-window.scrollTo(0,0);
+let auth=null,db=null,currentUser=null,chatStop=null;
+try{
+ const app=initializeApp(firebaseConfig);
+ auth=getAuth(app);db=getFirestore(app);
+ onAuthStateChanged(auth,user=>{
+   currentUser=user;
+   const name=user?(user.displayName||user.email.split("@")[0]):"Belum masuk";
+   document.getElementById("userStatus").textContent=name;
+   document.getElementById("profileStatus").textContent=user?"Masuk sebagai "+name:"Belum masuk.";
+   document.getElementById("avatar").textContent=user?name.charAt(0).toUpperCase():"R";
+   document.getElementById("chatStatus").textContent=user?"Terhubung sebagai "+name:"Masuk akun untuk mengirim pesan.";
+   if(chatStop){chatStop();chatStop=null}
+   if(user)listenChat();
+   else document.getElementById("chatBox").innerHTML='<p class="small">Masuk akun untuk melihat chat.</p>';
+ });
+}catch(e){
+ document.getElementById("chatStatus").textContent="Firebase gagal dimulai: "+e.message;
 }
 
-function hitung(op){
-let a=document.getElementById('angka1').value;
-let b=document.getElementById('angka2').value;
-let h=document.getElementById('hasilHitung');
-if(a===''||b===''){h.textContent='Isi kedua angka dahulu.';return}
-let x=Number(a),y=Number(b);
-if(op==='/'&&y===0){h.textContent='Tidak bisa membagi dengan nol.';return}
-let hasil=op==='+'?x+y:op==='-'?x-y:op==='*'?x*y:x/y;
-h.textContent='Hasil: '+hasil;
-}
-
-function mainTebak(){
-let n=Number(document.getElementById('tebakan').value);
-let h=document.getElementById('hasilTebak');
-if(!Number.isInteger(n)||n<1||n>10)h.textContent='Masukkan angka 1 sampai 10.';
-else if(n===angkaRahasia)h.textContent='Benar! Kamu berhasil! 🎉';
-else h.textContent=n<angkaRahasia?'Terlalu kecil, coba lagi!':'Terlalu besar, coba lagi!';
-}
-
-function pesanAkun(t){
-document.getElementById('statusAkun').textContent=t;
-}
-
-function ubahMode(){
-modeDaftar=!modeDaftar;
-document.getElementById('judulAkun').textContent=modeDaftar?'Buat akun Rulzz':'Masuk ke Rulzz';
-document.getElementById('namaDaftar').classList.toggle('sembunyi',!modeDaftar);
-document.getElementById('tombolDaftar').classList.toggle('sembunyi',!modeDaftar);
-document.getElementById('tombolMasuk').classList.toggle('sembunyi',modeDaftar);
-document.getElementById('tombolMode').textContent=modeDaftar?'Sudah punya akun? Masuk':'Belum punya akun? Daftar';
-document.getElementById('sandiAkun').autocomplete=modeDaftar?'new-password':'current-password';
-pesanAkun('');
-}
-
-function pesanError(e){
-let m={
-'auth/email-already-in-use':'Email sudah terdaftar. Coba masuk.',
-'auth/invalid-email':'Format email belum benar.',
-'auth/weak-password':'Kata sandi minimal 6 karakter.',
-'auth/user-not-found':'Akun tidak ditemukan.',
-'auth/wrong-password':'Kata sandi salah.',
-'auth/invalid-credential':'Email atau kata sandi salah.',
-'auth/too-many-requests':'Terlalu banyak percobaan. Coba lagi nanti.',
-'auth/network-request-failed':'Periksa koneksi internet.',
-'auth/operation-not-allowed':'Aktifkan Email/Password di Firebase.',
-'auth/unauthorized-domain':'Tambahkan domain website di Authorized domains Firebase.'
+window.showPage=function(id){
+ document.querySelectorAll(".page").forEach(p=>p.classList.toggle("active",p.id===id));
+ document.querySelectorAll(".nav button").forEach(b=>b.classList.toggle("active",b.dataset.page===id));
+ const titles={home:"Beranda",games:"Game",chat:"Chat",private:"Chat Pribadi",factions:"Kubu",map:"Peta Wilayah",rank:"Peringkat",profile:"Profil",tools:"Alat"};
+ document.getElementById("pageTitle").textContent=titles[id]||"RULZZ";
 };
-return m[e.code]||'Gagal: '+(e.message||'Coba lagi.');
+document.querySelectorAll(".nav button").forEach(b=>b.addEventListener("click",()=>showPage(b.dataset.page)));
+
+window.registerUser=async function(){
+ const name=document.getElementById("regName").value.trim();
+ const email=document.getElementById("regEmail").value.trim();
+ const pass=document.getElementById("regPass").value;
+ if(!name||!email||pass.length<6)return alert("Isi nama, email, dan kata sandi minimal 6 karakter.");
+ try{
+  const cred=await createUserWithEmailAndPassword(auth,email,pass);
+  await updateProfile(cred.user,{displayName:name});
+  alert("Akun berhasil dibuat!");
+ }catch(e){alert("Gagal daftar: "+e.message)}
+};
+window.loginUser=async function(){
+ try{
+  await signInWithEmailAndPassword(auth,document.getElementById("loginEmail").value.trim(),document.getElementById("loginPass").value);
+  alert("Berhasil masuk!");
+ }catch(e){alert("Gagal masuk. Periksa email dan kata sandi. "+e.message)}
+};
+window.logoutUser=async function(){
+ if(!auth)return;
+ try{await signOut(auth);alert("Kamu sudah keluar.")}catch(e){alert(e.message)}
+};
+
+function listenChat(){
+ const box=document.getElementById("chatBox");
+ try{
+  const q=query(collection(db,"pesan"),orderBy("waktu","asc"),limit(100));
+  chatStop=onSnapshot(q,snap=>{
+   box.innerHTML="";
+   snap.forEach(doc=>{
+    const d=doc.data(),el=document.createElement("div");
+    el.className="message";
+    const b=document.createElement("b");b.textContent=(d.nama||"Pemain")+": ";
+    const span=document.createElement("span");span.textContent=d.teks||"";
+    el.append(b,span);box.appendChild(el);
+   });
+   box.scrollTop=box.scrollHeight;
+  },e=>{document.getElementById("chatStatus").textContent="Chat gagal: "+e.message});
+ }catch(e){document.getElementById("chatStatus").textContent=e.message}
 }
+window.sendChat=async function(){
+ const input=document.getElementById("chatInput"),teks=input.value.trim();
+ if(!currentUser)return alert("Masuk akun dulu, bro.");
+ if(!teks)return;
+ try{
+  await addDoc(collection(db,"pesan"),{
+   uid:currentUser.uid,
+   nama:currentUser.displayName||currentUser.email.split("@")[0],
+   teks:teks.slice(0,1000),
+   waktu:serverTimestamp()
+  });
+  input.value="";
+ }catch(e){alert("Pesan gagal dikirim. Periksa aturan Firestore: "+e.message)}
+};
 
-async function daftar(){
-if(!auth){pesanAkun('Firebase belum siap. Periksa internet.');return}
-let nama=document.getElementById('namaDaftar').value.trim();
-let email=document.getElementById('emailAkun').value.trim();
-let sandi=document.getElementById('sandiAkun').value;
-if(nama.length<3||nama.length>30||!/^[a-zA-Z0-9_.-]+$/.test(nama)){
-pesanAkun('Nama pengguna 3–30 karakter: huruf, angka, titik, _ atau -.');return;
+window.joinFaction=function(f){
+ localStorage.setItem("rulzzFaction",f);
+ document.getElementById("myFaction").textContent=f;
+ alert("Kamu bergabung dengan kubu "+f+" pada perangkat ini.");
+};
+document.getElementById("myFaction").textContent=localStorage.getItem("rulzzFaction")||"Belum ada";
+
+let points=Number(localStorage.getItem("rulzzPoints")||0);
+function updatePoints(){
+ document.getElementById("points").textContent=points;
+ document.getElementById("level").textContent=Math.floor(points/100)+1;
+ localStorage.setItem("rulzzPoints",points);
 }
-if(!email){pesanAkun('Masukkan email.');return}
-if(sandi.length<6){pesanAkun('Kata sandi minimal 6 karakter.');return}
-ubahTombol(true);pesanAkun('Membuat akun...');
-try{
-let r=await auth.createUserWithEmailAndPassword(email,sandi);
-await r.user.updateProfile({displayName:nama});
-tampilkanProfil(r.user);
-pesanAkun('Akun berhasil dibuat!');
-document.getElementById('sandiAkun').value='';
-}catch(e){pesanAkun(pesanError(e))}
-finally{ubahTombol(false)}
+window.addPoints=function(n){points+=n;updatePoints();alert("Kamu mendapat "+n+" poin!")};
+updatePoints();
+
+function renderMap(id){
+ const map=document.getElementById(id);
+ for(let i=0;i<64;i++){
+  const t=document.createElement("div");t.className="tile";
+  t.textContent=i%11===0?"🏰":i%7===0?"🌲":"";
+  map.appendChild(t);
+ }
 }
+renderMap("homeMap");renderMap("bigMap");
 
-async function masuk(){
-if(!auth){pesanAkun('Firebase belum siap.');return}
-let email=document.getElementById('emailAkun').value.trim();
-let sandi=document.getElementById('sandiAkun').value;
-if(!email||!sandi){pesanAkun('Isi email dan kata sandi.');return}
-ubahTombol(true);pesanAkun('Sedang masuk...');
-try{
-let r=await auth.signInWithEmailAndPassword(email,sandi);
-tampilkanProfil(r.user);
-pesanAkun('Berhasil masuk!');
-document.getElementById('sandiAkun').value='';
-}catch(e){pesanAkun(pesanError(e))}
-finally{ubahTombol(false)}
+const sampleRanks=[["PemainRULZZ",250],["DragonX",180],["ShadowPro",120],["Kamu",points]];
+function renderRanks(id){
+ const el=document.getElementById(id);el.innerHTML="";
+ sampleRanks.sort((a,b)=>b[1]-a[1]).forEach((r,i)=>{
+  const d=document.createElement("div");d.className="item";
+  d.textContent=(i+1)+". "+r[0]+" — "+r[1]+" poin";el.appendChild(d);
+ });
 }
+renderRanks("homeRank");renderRanks("allRank");
 
-function ubahTombol(s){
-document.getElementById('tombolDaftar').disabled=s;
-document.getElementById('tombolMasuk').disabled=s;
+window.shareSite=function(){
+ if(navigator.share)navigator.share({title:"RULZZ",text:"Yuk gabung RULZZ!",url:location.href});
+ else alert("Salin alamat situs dari bilah alamat browser lalu bagikan ke teman.");
+};
+
+window.guessNumber=function(){
+ const n=Number(document.getElementById("guessInput").value),answer=Math.floor(Math.random()*10)+1;
+ const el=document.getElementById("guessResult");
+ if(n<1||n>10)return el.textContent="Masukkan angka 1–10.";
+ if(n===answer){el.textContent="Benar! +10 poin";points+=10;updatePoints()}
+ else el.textContent="Belum tepat. Angka rahasia: "+answer;
+};
+window.rps=function(choice){
+ const opts=["Batu","Gunting","Kertas"],cpu=opts[Math.floor(Math.random()*3)];
+ let result=choice===cpu?"Seri":((choice==="Batu"&&cpu==="Gunting")||(choice==="Gunting"&&cpu==="Kertas")||(choice==="Kertas"&&cpu==="Batu"))?"Kamu menang! +5 poin":"Komputer menang.";
+ document.getElementById("rpsResult").textContent="Kamu: "+choice+" | Komputer: "+cpu+" — "+result;
+ if(result.includes("menang!")){points+=5;updatePoints()}
+};
+
+let ttt=Array(9).fill(""),tttTurn="X",tttDone=false;
+window.resetTTT=function(){ttt=Array(9).fill("");tttTurn="X";tttDone=false;drawTTT()};
+function drawTTT(){
+ const board=document.getElementById("tttBoard");board.innerHTML="";
+ ttt.forEach((v,i)=>{const b=document.createElement("button");b.textContent=v||"·";b.onclick=()=>playTTT(i);board.appendChild(b)});
+ document.getElementById("tttResult").textContent=tttDone?"Permainan selesai": "Giliran "+tttTurn;
 }
-
-function tampilkanProfil(u){
-pengguna=u;
-document.getElementById('formAkun').classList.add('sembunyi');
-document.getElementById('profilAkun').classList.remove('sembunyi');
-document.getElementById('namaProfil').textContent=u.displayName||'Pengguna Rulzz';
-document.getElementById('emailProfil').textContent=u.email||'-';
-document.getElementById('sapaan').textContent='Halo, '+(u.displayName||'Rulzz')+'! 👋';
-document.getElementById('statusBeranda').textContent='Kamu sudah masuk ke akun Rulzz.';
+function playTTT(i){
+ if(ttt[i]||tttDone)return;ttt[i]=tttTurn;
+ const wins=[[0,1,2],[3,4,5],[6,7,8],[0,3,6],[1,4,7],[2,5,8],[0,4,8],[2,4,6]];
+ const win=wins.some(w=>w.every(j=>ttt[j]===tttTurn));
+ if(win){tttDone=true;document.getElementById("tttResult").textContent=tttTurn+" menang!";if(tttTurn==="X"){points+=5;updatePoints()}}
+ else if(ttt.every(Boolean)){tttDone=true;document.getElementById("tttResult").textContent="Seri!"}
+ else tttTurn=tttTurn==="X"?"O":"X";
+ drawTTT();
 }
+drawTTT();
 
-async function editNama(){
-if(!auth?.currentUser)return;
-let n=prompt('Nama pengguna baru:',auth.currentUser.displayName||'');
-if(n===null)return;
-n=n.trim();
-if(n.length<3||n.length>30||!/^[a-zA-Z0-9_.-]+$/.test(n)){
-document.getElementById('statusProfil').textContent='Nama harus 3–30 karakter: huruf, angka, titik, _ atau -.';return;
+let memoryVals=[],memoryOpen=[],memoryMatched=[];
+window.resetMemory=function(){
+ memoryVals=["🐉","🚗","🎮","⚡","🐉","🚗","🎮","⚡"].sort(()=>Math.random()-.5);
+ memoryOpen=[];memoryMatched=[];drawMemory();
+ document.getElementById("memoryResult").textContent="Cari pasangan yang sama.";
+};
+function drawMemory(){
+ const el=document.getElementById("memoryBoard");el.innerHTML="";
+ memoryVals.forEach((v,i)=>{
+  const b=document.createElement("button");
+  b.textContent=memoryMatched.includes(i)||memoryOpen.includes(i)?v:"❔";
+  b.onclick=()=>flipMemory(i);el.appendChild(b);
+ });
 }
-try{
-await auth.currentUser.updateProfile({displayName:n});
-tampilkanProfil(auth.currentUser);
-document.getElementById('statusProfil').textContent='Nama berhasil diperbarui.';
-}catch(e){document.getElementById('statusProfil').textContent=pesanError(e)}
+function flipMemory(i){
+ if(memoryOpen.includes(i)||memoryMatched.includes(i))return;
+ memoryOpen.push(i);drawMemory();
+ if(memoryOpen.length===2){
+  if(memoryVals[memoryOpen[0]]===memoryVals[memoryOpen[1]]){
+   memoryMatched.push(...memoryOpen);memoryOpen=[];
+   if(memoryMatched.length===memoryVals.length){document.getElementById("memoryResult").textContent="Hebat! +10 poin";points+=10;updatePoints()}
+   drawMemory();
+  }else setTimeout(()=>{memoryOpen=[];drawMemory()},650);
+ }
 }
+resetMemory();
 
-async function keluar(){
-if(!auth)return;
-try{await auth.signOut();buka('profil');pesanAkun('Kamu sudah keluar.')}
-catch(e){document.getElementById('statusProfil').textContent=pesanError(e)}
+let chessPieces=[],chessSelected=null;
+window.resetChess=function(){
+ chessPieces=["♜","♞","♝","♛","♚","♝","♞","♜",..."♟".repeat(8),..." ".repeat(32),..."♙".repeat(8),"♖","♘","♗","♕","♔","♗","♘","♖"];
+ chessSelected=null;drawChess();
+};
+function drawChess(){
+ const board=document.getElementById("chessBoard");board.innerHTML="";
+ chessPieces.forEach((p,i)=>{
+  const b=document.createElement("button");
+  b.style.cssText="padding:0;min-height:0;aspect-ratio:1;font-size:17px;background:"+((Math.floor(i/8)+i%8)%2?"#31435e":"#d4dfed")+";color:#101827;border-radius:3px";
+  b.textContent=p.trim();b.onclick=()=>{if(chessSelected===null){chessSelected=i;b.style.outline="2px solid #3985ff"}else{chessPieces[chessSelected]=chessPieces[i];chessPieces[i]=chessPieces[chessSelected];chessSelected=null;drawChess();document.getElementById("chessResult").textContent="Bidak dipindah (demo, aturan catur belum diterapkan)."}};
+  board.appendChild(b);
+ });
 }
+resetChess();
 
-function tampilkanForm(){
-pengguna=null;
-document.getElementById('profilAkun').classList.add('sembunyi');
-document.getElementById('formAkun').classList.remove('sembunyi');
-document.getElementById('sapaan').textContent='Halo, Rulzz! 👋';
-document.getElementById('statusBeranda').textContent='Mau melakukan apa hari ini?';
+let carLane=2,carRunning=false,carScore=0,carTimer=null;
+window.moveCar=function(dir){carLane=Math.max(0,Math.min(4,carLane+dir));drawCar()};
+function drawCar(){
+ document.getElementById("carTrack").innerHTML=Array.from({length:3},(_,r)=>Array.from({length:5},(_,c)=>r===2&&c===carLane?"🚗":r===0&&c===window.obstacleLane?"🪨":"⬛").join("")).join("<br>");
 }
+window.startCar=function(){
+ if(carRunning)return;carRunning=true;carScore=0;
+ carTimer=setInterval(()=>{
+  carScore++;window.obstacleLane=Math.floor(Math.random()*5);
+  if(carScore%7===0&&carLane===window.obstacleLane){
+   clearInterval(carTimer);carRunning=false;alert("Menabrak! Skor: "+carScore);return;
+  }
+  document.getElementById("carScore").textContent="Skor: "+carScore;
+  drawCar();
+  if(carScore>=30){clearInterval(carTimer);carRunning=false;points+=10;updatePoints();alert("Selesai! +10 poin")}
+ },500);
+};
+window.obstacleLane=0;drawCar();
 
-function tampilkanChat(){
-if(berhentiChat){berhentiChat();berhentiChat=null}
-const status=document.getElementById('statusChat');
-const daftar=document.getElementById('daftarPesan');
-const input=document.getElementById('pesan');
-const tombol=document.getElementById('tombolKirim');
+window.sendPrivate=function(){
+ const name=document.getElementById("privateName").value.trim();
+ const msg=document.getElementById("privateText").value.trim();
+ if(!name||!msg)return alert("Isi username teman dan pesan.");
+ const d=document.createElement("div");d.className="item";
+ d.textContent="Contoh pesan ke "+name+": "+msg;
+ document.getElementById("privateBox").prepend(d);
+ document.getElementById("privateText").value="";
+ alert("Pesan ini hanya tersimpan di tampilan perangkat, belum terkirim online.");
+};
 
-daftar.replaceChildren();
-
-if(!pengguna){
-status.textContent='Login melalui menu Profil untuk menggunakan chat.';
-input.disabled=true;
-tombol.disabled=true;
-const p=document.createElement('p');
-p.className='kecil';
-p.textContent='Belum login.';
-daftar.appendChild(p);
-return;
-}
-
-if(!db){
-status.textContent='Koneksi database belum siap. Periksa internet.';
-input.disabled=true;
-tombol.disabled=true;
-return;
-}
-
-input.disabled=false;
-tombol.disabled=false;
-status.textContent='Terhubung sebagai '+(pengguna.displayName||pengguna.email);
-
-berhentiChat=db.collection('pesan')
-.orderBy('waktu','asc')
-.limit(100)
-.onSnapshot(snapshot=>{
-daftar.replaceChildren();
-
-if(snapshot.empty){
-const p=document.createElement('p');
-p.className='kecil';
-p.textContent='Belum ada pesan. Mulai obrolan pertama!';
-daftar.appendChild(p);
-return;
-}
-
-snapshot.forEach(doc=>{
-const data=doc.data();
-const kotak=document.createElement('div');
-kotak.className='bubble';
-
-const nama=document.createElement('small');
-nama.textContent=data.nama||'Pengguna Rulzz';
-
-const isi=document.createElement('div');
-isi.textContent=data.teks||'';
-
-const waktu=document.createElement('div');
-waktu.className='waktu';
-if(data.waktu&&data.waktu.toDate){
-waktu.textContent=data.waktu.toDate().toLocaleString('id-ID');
-}else{
-waktu.textContent='Baru saja';
-}
-
-kotak.appendChild(nama);
-kotak.appendChild(isi);
-kotak.appendChild(waktu);
-daftar.appendChild(kotak);
-});
-
-daftar.scrollTop=daftar.scrollHeight;
-},error=>{
-status.textContent='Chat gagal dimuat: '+error.message;
-});
-}
-
-async function kirimPesan(event){
-event.preventDefault();
-if(!pengguna){alert('Login dulu melalui Profil.');return}
-
-const input=document.getElementById('pesan');
-const tombol=document.getElementById('tombolKirim');
-const teks=input.value.trim();
-
-if(!teks)return;
-if(teks.length>1000){alert('Pesan maksimal 1000 karakter.');return}
-
-tombol.disabled=true;
-try{
-await db.collection('pesan').add({
-uid:pengguna.uid,
-nama:pengguna.displayName||'Pengguna Rulzz',
-teks:teks,
-waktu:firebase.firestore.FieldValue.serverTimestamp()
-});
-input.value='';
-}catch(e){
-alert('Pesan gagal dikirim. Periksa aturan Firestore dan koneksi internet. Detail: '+e.message);
-}finally{
-tombol.disabled=false;
-input.focus();
-}
-}
-
-try{
-firebase.initializeApp(firebaseConfig);
-auth=firebase.auth();
-db=firebase.firestore();
-
-auth.onAuthStateChanged(u=>{
-if(u)tampilkanProfil(u);
-else tampilkanForm();
-if(document.getElementById('chat').classList.contains('aktif'))tampilkanChat();
-});
-}catch(e){
-pesanAkun('Firebase gagal dimulai. Periksa konfigurasi dan internet.');
-document.getElementById('statusChat').textContent='Firebase belum siap.';
-}
+window.calcAdd=function(v){document.getElementById("calcDisplay").value+=v};
+window.calcClear=function(){document.getElementById("calcDisplay").value="";document.getElementById("calcResult").textContent=""};
+window.calculate=function(){
+ const s=document.getElementById("calcDisplay").value.trim();
+ if(!/^[0-9+\-*/.() ]+$/.test(s))return alert("Masukkan operasi matematika yang benar.");
+ try{
+  const result=Function('"use strict";return ('+s+')')();
+  if(!Number.isFinite(result))throw Error();
+  document.getElementById("calcResult").textContent=result;
+ }catch(e){document.getElementById("calcResult").textContent="Perhitungan salah"}
+};
 </script>
 </body>
-  </html>
-  
+</html>
+                                                                                                                                  </div>
