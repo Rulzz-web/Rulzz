@@ -53,10 +53,62 @@ h1,h2,h3,p{margin-top:0}
 .chatbox{height:280px;overflow-y:auto;background:#0a1323;padding:10px;border-radius:10px;margin-bottom:10px}
 .message{background:#1b2b47;padding:9px;border-radius:10px;margin:7px 0;overflow-wrap:anywhere}
 .message b{color:#8ebaff}
-.map{display:grid;grid-template-columns:repeat(8,1fr);gap:4px}
-.tile{aspect-ratio:1;border-radius:5px;background:#183e38;border:1px solid #2d6558;font-size:10px;padding:2px}
-.tile:nth-child(3n){background:#28375d}
-.tile:nth-child(5n){background:#57412d}
+.map{
+  position:relative;
+  display:block;
+  width:100%;
+  aspect-ratio:1.35;
+  min-height:220px;
+  overflow:hidden;
+  border-radius:18px;
+  border:2px solid #345b62;
+  background:
+    radial-gradient(ellipse at 18% 25%,#64885a 0 8%,transparent 9%),
+    radial-gradient(ellipse at 75% 70%,#52794e 0 12%,transparent 13%),
+    radial-gradient(ellipse at 42% 78%,#75915a 0 9%,transparent 10%),
+    linear-gradient(145deg,#315b47,#53794e 45%,#294c40);
+}
+.map .river{
+  position:absolute;
+  width:145%;
+  height:24px;
+  left:-20%;
+  top:48%;
+  background:#398fc5;
+  border:3px solid #76c5e8;
+  border-radius:50%;
+  transform:rotate(-28deg);
+  box-shadow:0 0 12px #3287b4;
+}
+.map .road{
+  position:absolute;
+  width:130%;
+  height:12px;
+  left:-10%;
+  top:36%;
+  background:#c8b58a;
+  border-top:2px solid #e9d8ad;
+  border-bottom:2px solid #8b7957;
+  transform:rotate(24deg);
+}
+.map .landmark{
+  position:absolute;
+  z-index:2;
+  transform:translate(-50%,-50%);
+  font-size:clamp(17px,4vw,28px);
+  filter:drop-shadow(1px 2px 2px #15251c);
+}
+.map .mapname{
+  position:absolute;
+  z-index:3;
+  color:white;
+  font-size:10px;
+  font-weight:bold;
+  text-shadow:1px 2px 3px #15251c;
+  background:#102c32aa;
+  padding:4px 6px;
+  border-radius:6px;
+ }
 .footer{text-align:center;color:var(--muted);font-size:11px;padding:25px 0}
 hr{border:0;border-top:1px solid var(--line);margin:15px 0}
 @media(max-width:900px){.grid{grid-template-columns:repeat(2,minmax(0,1fr))}.sidebar{width:180px;padding:12px}.main{padding:13px}}
@@ -341,14 +393,55 @@ function updatePoints(){
 }
 window.addPoints=function(n){points+=n;updatePoints();alert("Kamu mendapat "+n+" poin!")};
 updatePoints();
-
+ 
 function renderMap(id){
- const map=document.getElementById(id);
- for(let i=0;i<64;i++){
-  const t=document.createElement("div");t.className="tile";
-  t.textContent=i%11===0?"🏰":i%7===0?"🌲":"";
-  map.appendChild(t);
- }
+  const map=document.getElementById(id);
+  map.innerHTML="";
+
+  const river=document.createElement("div");
+  river.className="river";
+  map.appendChild(river);
+
+  const road=document.createElement("div");
+  road.className="road";
+  map.appendChild(road);
+
+  const places=[
+    {x:17,y:20,icon:"🏰",name:"Markas TRG"},
+    {x:72,y:17,icon:"🌲"},
+    {x:43,y:31,icon:"🏘️",name:"Desa"},
+    {x:80,y:46,icon:"🌲"},
+    {x:25,y:55,icon:"⛰️"},
+    {x:58,y:66,icon:"🏯",name:"Benteng"},
+    {x:15,y:80,icon:"🌲"},
+    {x:84,y:81,icon:"🏰",name:"Markas BLZ"}
+  ];
+
+  places.forEach(p=>{
+    const marker=document.createElement("div");
+    marker.className="landmark";
+    marker.style.left=p.x+"%";
+    marker.style.top=p.y+"%";
+    marker.textContent=p.icon;
+    map.appendChild(marker);
+
+    if(p.name){
+      const label=document.createElement("div");
+      label.className="mapname";
+      label.style.left=p.x+"%";
+      label.style.top=(p.y+7)+"%";
+      label.style.transform="translateX(-50%)";
+      label.textContent=p.name;
+      map.appendChild(label);
+    }
+  });
+
+  const title=document.createElement("div");
+  title.className="mapname";
+  title.style.left="4%";
+  title.style.top="4%";
+  title.textContent="🗺️ DUNIA RULZZ";
+  map.appendChild(title);
 }
 renderMap("homeMap");renderMap("bigMap");
 
@@ -426,20 +519,74 @@ function flipMemory(i){
 }
 resetMemory();
 
-let chessPieces=[],chessSelected=null;
+let chessPieces=[], chessSelected=null;
+
 window.resetChess=function(){
- chessPieces=["♜","♞","♝","♛","♚","♝","♞","♜",..."♟".repeat(8),..." ".repeat(32),..."♙".repeat(8),"♖","♘","♗","♕","♔","♗","♘","♖"];
- chessSelected=null;drawChess();
+  chessPieces=[
+    ..."♜♞♝♛♚♝♞♜",
+    ..."♟♟♟♟♟♟♟♟",
+    ..."        ",
+    ..."        ",
+    ..."        ",
+    ..."        ",
+    ..."♙♙♙♙♙♙♙♙",
+    ..."♖♘♗♕♔♗♘♖"
+  ];
+  chessSelected=null;
+  drawChess();
+  document.getElementById("chessResult").textContent="Pilih bidak, lalu pilih kotak tujuan.";
 };
+
 function drawChess(){
- const board=document.getElementById("chessBoard");board.innerHTML="";
- chessPieces.forEach((p,i)=>{
-  const b=document.createElement("button");
-  b.style.cssText="padding:0;min-height:0;aspect-ratio:1;font-size:17px;background:"+((Math.floor(i/8)+i%8)%2?"#31435e":"#d4dfed")+";color:#101827;border-radius:3px";
-  b.textContent=p.trim();b.onclick=()=>{if(chessSelected===null){chessSelected=i;b.style.outline="2px solid #3985ff"}else{chessPieces[chessSelected]=chessPieces[i];chessPieces[i]=chessPieces[chessSelected];chessSelected=null;drawChess();document.getElementById("chessResult").textContent="Bidak dipindah (demo, aturan catur belum diterapkan)."}};
-  board.appendChild(b);
- });
+  const board=document.getElementById("chessBoard");
+  board.innerHTML="";
+
+  chessPieces.forEach((piece,i)=>{
+    const b=document.createElement("button");
+    const row=Math.floor(i/8),col=i%8;
+
+    b.style.cssText=
+      "padding:0;min-height:0;aspect-ratio:1;font-size:clamp(14px,4vw,25px);"+
+      "background:"+((row+col)%2?"#31435e":"#d4dfed")+
+      ";color:#101827;border-radius:3px;";
+
+    b.textContent=piece.trim();
+    if(chessSelected===i){
+      b.style.outline="3px solid #3985ff";
+    }
+
+    b.onclick=()=>{
+      if(chessSelected===null){
+        if(!piece.trim())return;
+        chessSelected=i;
+        drawChess();
+        document.getElementById("chessResult").textContent="Sekarang pilih kotak tujuan.";
+        return;
+      }
+
+      if(chessSelected===i){
+        chessSelected=null;
+        drawChess();
+        return;
+      }
+
+      // Simpan bidak yang dipilih sebelum memindahkannya
+      const movingPiece=chessPieces[chessSelected];
+
+      // Pindahkan bidak; bidak tujuan boleh dikosongkan atau dimakan
+      chessPieces[i]=movingPiece;
+      chessPieces[chessSelected]=" ";
+      chessSelected=null;
+
+      drawChess();
+      document.getElementById("chessResult").textContent=
+        "Bidak berhasil dipindahkan!";
+    };
+
+    board.appendChild(b);
+  });
 }
+
 resetChess();
 
 let carLane=2,carRunning=false,carScore=0,carTimer=null;
